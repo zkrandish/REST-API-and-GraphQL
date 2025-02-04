@@ -5,7 +5,7 @@ module.exports = {
         io = require('socket.io')(httpServer, {
             cors: {
                 //origin: "http://localhost:3000", // ✅ Allow frontend to connect
-                methods: ["GET", "POST"]
+                methods: ["GET", "POST", "PUT"]
             }
         });
         return io;
