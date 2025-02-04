@@ -60,20 +60,15 @@ mongoose.connect('mongodb+srv://zkarandish:kGDlY2bBPkkh3BUR@cluster0.hskal.mongo
     const server = app.listen(8080);
     
     // ✅ Fix CORS issues for Socket.io
-    const io = require('socket.io')(server, {
-        cors: {
-            //origin: "http://localhost:3000", // Allow frontend to connect
-            methods: ["GET", "POST"]
-        }
-    });
+    const io = require('./socket').init(server);
 
     io.on('connection', socket => {
-        console.log('✅ Client connected via WebSocket');
+        console.log(' Client connected via WebSocket');
     });
 
 })
 .catch(err => {
-    console.log('❌ MongoDB Connection Error:', err);
+    console.log(' MongoDB Connection Error:', err);
 });
 
 
