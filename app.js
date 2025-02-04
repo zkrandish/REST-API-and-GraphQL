@@ -57,7 +57,12 @@ app.use((error, req, res, next)=>{
 
 mongoose.connect('mongodb+srv://zkarandish:kGDlY2bBPkkh3BUR@cluster0.hskal.mongodb.net/messages?retryWrites=true&w=majority&appName=Cluster0')
 .then(result=>{
-    app.listen(8080);
+    const server = app.listen(8080);
+    const io = require('socket.io')(server);
+    io.on('connection',socket=>{
+        console.log('client connected');
+
+    });
     
 })
 .catch(err=>{
