@@ -4,9 +4,10 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
+const { graphqlHTTP  } = require('express-graphql');
+const graphqlSchema = require('./graphql/schema');
+const graphqlResolver = require('./graphql/resolvers');
 
-const feedRoutes = require('./routes/feed');
-const authRoutes = require('./routes/auth');
 
 const app = express();
 
@@ -44,8 +45,14 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     next();
   });
-app.use('/feed',feedRoutes);
-app.use('/auth',authRoutes);
+
+  app.use('/graphql', graphqlHTTP({
+    schema: graphqlSchema,
+    rootValue: graphqlResolver
+})
+);
+
+
 
 app.use((error, req, res, next)=>{
     console.log(error);
@@ -57,15 +64,7 @@ app.use((error, req, res, next)=>{
 
 mongoose.connect('mongodb+srv://zkarandish:kGDlY2bBPkkh3BUR@cluster0.hskal.mongodb.net/messages?retryWrites=true&w=majority&appName=Cluster0')
 .then(result => {
-    const server = app.listen(8080);
-    
-    // ✅ Fix CORS issues for Socket.io
-    const io = require('./socket').init(server);
-
-    io.on('connection', socket => {
-        console.log(' Client connected via WebSocket');
-    });
-
+     app.listen(8080);
 })
 .catch(err => {
     console.log(' MongoDB Connection Error:', err);
