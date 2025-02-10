@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "nodemon app.js"
   },
   "author": "",
@@ -21,6 +21,9 @@
     "uuid": "^11.0.5"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "chai": "^4.3.6",
+    "mocha": "^11.1.0",
+    "nodemon": "^3.1.9",
+    "sinon": "^19.0.2"
   }
 }

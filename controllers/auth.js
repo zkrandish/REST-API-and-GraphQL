@@ -57,13 +57,16 @@ exports.login= async (req,res,next)=>{
         'somesupersecretsecret',
         {expiresIn: '1h'}
     );
-    res.status(200).json({token:token, userId:loadedUser._id.toString() })
+    res.status(200).json({token:token, userId:loadedUser._id.toString() });
+    return;
     }catch(err){
         if(!err.statusCode){
             err.statusCode = 500;
         }
-        next(err)
+        next(err);
+        return err;
     }
+    
 };
 
 exports.getUserStatus=async (req,res,next)=>{
