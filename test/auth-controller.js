@@ -5,7 +5,23 @@ const mongoose = require('mongoose');
 const User = require('../models/user');
 const AuthController = require('../controllers/auth');
 
-describe('Auth Controller - Login', function() {
+describe('Auth Controller ', function() {
+    before(function(done){
+        mongoose.connect('mongodb+srv://zkarandish:kGDlY2bBPkkh3BUR@cluster0.hskal.mongodb.net/test-messages?retryWrites=true&w=majority&appName=Cluster0')
+    .then(result => {
+       const user = new User({
+        email: 'test@test.com',
+        password:'a1234',
+        name: 'Test',
+        posts: [],
+        _id: '5c0f66b979af55031b34728a'
+       });
+      return user.save()
+    })
+    .then(()=>{
+        done();
+    })
+    })
   it('should throw an error with code 500 if accessing the database fails', function(done) {
     sinon.stub(User, 'findOne');
     User.findOne.throws();
@@ -27,18 +43,7 @@ describe('Auth Controller - Login', function() {
   });
 
   it('should send response with valid user status for an existing user', function(done){
-    mongoose.connect('mongodb+srv://zkarandish:kGDlY2bBPkkh3BUR@cluster0.hskal.mongodb.net/test-messages?retryWrites=true&w=majority&appName=Cluster0')
-    .then(result => {
-       const user = new User({
-        email: 'test@test.com',
-        password:'a1234',
-        name: 'Test',
-        posts: [],
-        _id: '5c0f66b979af55031b34728a'
-       });
-      return user.save()
-    })
-    .then(()=>{
+    
         const req = {userId:'5c0f66b979af55031b34728a'}
         const res ={
             statusCode: 500,
@@ -54,15 +59,17 @@ describe('Auth Controller - Login', function() {
         AuthController.getUserStatus(req,res, ()=>{}).then(()=>{
             expect(res.statusCode).to.be.equal(200);
             expect(res.userStatus).to.be.equal('I am new!');
-            User.deleteMany({})
-                .then(()=>{
-                   return mongoose.disconnect()
-            })
-            .then(()=>{
-                done();
-           });
+            done();
+          
         });
-    })
-    .catch(err=>console.log(err));
   });
+  after(function(done){
+    User.deleteMany({})
+    .then(()=>{
+       return mongoose.disconnect()
+    })
+.then(()=>{
+    done();
+    });
+  })
 });
