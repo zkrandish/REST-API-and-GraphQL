@@ -32,31 +32,31 @@ exports.getPosts = async (req, res, next)=>{
 };
 
 exports.createPost = async (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      const error = new Error('Validation failed, entered data is incorrect.');
-      error.statusCode = 422;
-      throw error;
-    }
-    if (!req.file) {
-      const error = new Error('No image provided.');
-      error.statusCode = 422;
-      throw error;
-    }
-    const imageUrl = req.file.path.replace("\\", "/");
-    const title = req.body.title;
-    const content = req.body.content;
-    const post = new Post({
-      title: title,
-      content: content,
-      imageUrl: imageUrl,
-      creator: req.userId
-    });
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error('Validation failed, entered data is incorrect.');
+    error.statusCode = 422;
+    throw error;
+  }
+  if (!req.file) {
+    const error = new Error('No image provided.');
+    error.statusCode = 422;
+    throw error;
+  }
+  const imageUrl = req.file.path.replace("\\", "/");
+  const title = req.body.title;
+  const content = req.body.content;
+  const post = new Post({
+    title: title,
+    content: content,
+    imageUrl: imageUrl,
+    creator: req.userId
+  });
     try{
       await post.save()
       const user= await User.findById(req.userId);
         user.posts.push(post);
-        await user.save();
+        const savedUser = await user.save();
         io.getIo().emit('posts',{
           action: 'create',
           post: {...post._doc, creator:{_id: req.userId, name: user.name}}
@@ -66,6 +66,7 @@ exports.createPost = async (req, res, next) => {
           post: post,
           creator: { _id: user._id, name: user.name }
         });
+        return savedUser;
     } catch(err){ 
         if (!err.statusCode) {
           err.statusCode = 500;

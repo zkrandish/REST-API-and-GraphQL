@@ -20,8 +20,11 @@ describe('Auth Controller ', function() {
     })
     .then(()=>{
         done();
-    })
-    })
+    });
+});
+ beforeEach(function(){
+    
+ })
   it('should throw an error with code 500 if accessing the database fails', function(done) {
     sinon.stub(User, 'findOne');
     User.findOne.throws();
