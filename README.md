@@ -1,461 +1,450 @@
 # Social Media Platform API
 
-![Node.js](https://img.shields.io/badge/Node.js-Backend-green)
-![Express](https://img.shields.io/badge/Express.js-4.x-black)
-![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-green)
+![Node.js](https://img.shields.io/badge/Node.js-Backend-339933?logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-4.x-000000?logo=express)
+![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?logo=mongodb&logoColor=white)
 ![REST API](https://img.shields.io/badge/API-REST-blue)
-![GraphQL](https://img.shields.io/badge/Alternative_API-GraphQL-E10098)
-![Socket.IO](https://img.shields.io/badge/Real--Time-Socket.IO-black)
-![Tests](https://img.shields.io/badge/Tests-Mocha%20%7C%20Chai-yellow)
+![GraphQL](https://img.shields.io/badge/API-GraphQL-E10098?logo=graphql)
+![JWT](https://img.shields.io/badge/Auth-JWT-orange)
+![Socket.IO](https://img.shields.io/badge/Socket.IO-Real--Time-black?logo=socket.io)
 
-Backend service for a full-stack social media application built with Node.js, Express, MongoDB, JWT, and Socket.IO.
+Backend service for a full-stack social media platform built with **Node.js**, **Express.js**, **MongoDB**, **JWT Authentication**, **Socket.IO**, and **GraphQL**.
 
-This repository contains the server-side application. The React frontend is maintained in a separate repository.
+This project demonstrates two backend implementations:
 
-- **Frontend repository:** [View the React frontend](FRONTEND_REPOSITORY_URL)
-- **GraphQL implementation:** [View the GraphQL branch](GRAPHQL_BRANCH_URL)
+- **main** → REST API implementation
+- **28-GraphQl** → Alternative GraphQL implementation
 
-> The default branch contains the REST API implementation. An alternative
-> GraphQL implementation is maintained in a separate branch.
+The React frontend is maintained in a separate repository.
 
-## Overview
+---
 
-The backend provides authentication, user status management, post management, image uploads, pagination, and real-time post synchronization.
+# Features
 
-Registered users can sign in, retrieve posts, create posts with images, and modify or delete posts they own. The server broadcasts post changes through Socket.IO, allowing connected frontend clients to update without refreshing the page.
+## User Authentication
 
-## Features
-
-### Authentication and users
-
-- User registration and login
-- Password hashing using bcrypt
-- JSON Web Token authentication
-- One-hour token expiration
-- Protected API routes
-- User status retrieval and updates
+- User registration
+- Secure login
+- Password hashing using **bcrypt**
+- JWT authentication
+- Protected routes
+- User profile status
 - Authentication middleware
-- Request validation
 
-### Post management
+---
 
-- Create posts with a title, content, and image
-- Retrieve paginated posts
-- Retrieve an individual post
-- Update posts
-- Delete posts
-- Restrict updates and deletions to the post creator
-- Associate posts with their creators
-- Sort posts by creation date
+## Post Management
 
-### Media handling
+Users can:
 
-- Image upload using Multer
-- Support for PNG, JPG, and JPEG files
-- Static image serving
-- Removal of replaced or deleted image files
-- UUID-based uploaded filenames
+- Create posts
+- View posts
+- Retrieve individual posts
+- Update their own posts
+- Delete their own posts
+- Upload images
+- View paginated feeds
 
-### Real-time communication
+Each post is associated with its creator through MongoDB relationships.
 
-- Socket.IO server integration
-- Real-time post creation events
-- Real-time post update events
-- Real-time post deletion events
-
-### Reliability and testing
-
-- Centralized error-handling middleware
-- Input validation using `express-validator`
-- Authentication middleware tests
-- Authentication controller tests
-- Feed controller tests
-- Mocha, Chai, and Sinon test tooling
-
-## Tech Stack
-
-| Area | Technologies |
-|---|---|
-| Runtime | Node.js |
-| Web framework | Express.js |
-| Database | MongoDB |
-| Object modelling | Mongoose |
-| Authentication | JSON Web Token |
-| Password security | bcrypt |
-| Validation | express-validator |
-| File uploads | Multer |
-| Real-time communication | Socket.IO |
-| Testing | Mocha, Chai, Sinon |
-| Development | Nodemon |
-| Alternative API | GraphQL implementation in a separate branch |
-
-## Architecture
-
-The application follows a route-controller-model structure.
-
-```text
-React Client
-     |
-     | HTTP requests and JWT
-     v
-Express Routes
-     |
-     +---- Validation Middleware
-     |
-     +---- Authentication Middleware
-     |
-     v
-Controllers
-     |
-     +---- Mongoose Models ----> MongoDB
-     |
-     +---- Multer -------------> Local Image Storage
-     |
-     +---- Socket.IO ----------> Connected Clients
-```
-
-### Request flow
-
-1. The React client sends a request to an Express route.
-2. Protected routes pass through JWT authentication middleware.
-3. Request fields are validated using `express-validator`.
-4. The controller executes the requested business logic.
-5. Mongoose reads from or writes to MongoDB.
-6. Post changes are broadcast to connected clients through Socket.IO.
-7. The server returns a JSON response or a standardized error response.
-
-## Project Structure
-
-```text
-nodejs-restapi/
-├── controllers/
-│   ├── auth.js
-│   └── feed.js
-├── middleware/
-│   └── is-auth.js
-├── models/
-│   ├── post.js
-│   └── user.js
-├── routes/
-│   ├── auth.js
-│   └── feed.js
-├── test/
-│   ├── auth-controller.js
-│   ├── auth-middleware.js
-│   ├── feed-controller.js
-│   └── start.js
-├── images/
-├── app.js
-├── socket.js
-├── package.json
-└── .env.example
-```
-
-## Data Models
-
-### User
-
-A user contains:
-
-| Field | Type | Description |
-|---|---|---|
-| `email` | String | User's email address |
-| `password` | String | Hashed password |
-| `name` | String | User's display name |
-| `status` | String | Profile status message |
-| `posts` | ObjectId array | References to posts created by the user |
-
-The default user status is:
-
-```text
-I am new!
-```
-
-### Post
-
-A post contains:
-
-| Field | Type | Description |
-|---|---|---|
-| `title` | String | Post title |
-| `content` | String | Post body |
-| `imageUrl` | String | Path to the uploaded image |
-| `creator` | ObjectId | Reference to the user who created the post |
-| `createdAt` | Date | Automatically generated creation time |
-| `updatedAt` | Date | Automatically generated update time |
-
-## REST API Endpoints
-
-### Authentication
-
-| Method | Endpoint | Protected | Description |
-|---|---|---:|---|
-| `PUT` | `/auth/signup` | No | Register a new user |
-| `POST` | `/auth/login` | No | Authenticate a user and return a token |
-| `GET` | `/auth/status` | Yes | Retrieve the authenticated user's status |
-| `PATCH` | `/auth/status` | Yes | Update the authenticated user's status |
-
-### Feed
-
-| Method | Endpoint | Protected | Description |
-|---|---|---:|---|
-| `GET` | `/feed/posts?page=1` | Yes | Retrieve paginated posts |
-| `POST` | `/feed/post` | Yes | Create a post with an image |
-| `GET` | `/feed/post/:postId` | Yes | Retrieve a specific post |
-| `PUT` | `/feed/post/:postId` | Yes | Update a post owned by the user |
-| `DELETE` | `/feed/post/:postId` | Yes | Delete a post owned by the user |
-
-## Authentication
-
-After a successful login, the server returns:
-
-```json
-{
-  "token": "generated-jwt",
-  "userId": "user-id"
-}
-```
-
-Protected requests must include the token:
-
-```http
-Authorization: Bearer YOUR_TOKEN
-```
-
-The authentication middleware verifies the token and adds the decoded user ID to the request:
-
-```js
-req.userId
-```
-
-Tokens expire after one hour.
-
-## Validation
-
-During registration:
-
-- Email must have a valid format.
-- Email must not already exist.
-- Password must contain at least five characters.
-- Name must not be empty.
-
-For posts:
-
-- Title must contain at least five characters.
-- Content must contain at least five characters.
-- An image is required when creating a post.
-
-Validation errors return HTTP status `422`.
+---
 
 ## Image Uploads
 
-Post creation and update requests use `multipart/form-data`.
+The application supports image uploads using **Multer**.
 
-The uploaded file field must be named:
+Features include:
 
-```text
-image
-```
+- PNG / JPG / JPEG validation
+- UUID-generated filenames
+- Static image serving
+- Automatic cleanup of replaced and deleted images
 
-Supported MIME types:
+---
 
-```text
-image/png
-image/jpg
-image/jpeg
-```
+## Real-Time Updates (REST API)
 
-Uploaded images are available through:
+The REST implementation uses **Socket.IO** to broadcast:
 
-```text
-/images/<filename>
-```
+- New posts
+- Updated posts
+- Deleted posts
 
-UUID values are used as filenames to reduce filename collisions.
+allowing connected clients to update instantly without refreshing.
 
-## Pagination
+---
 
-Posts are returned in reverse chronological order, with the newest posts first.
+## GraphQL API
 
-Example request:
+The GraphQL implementation provides:
 
-```http
-GET /feed/posts?page=1
-```
+### Queries
 
-The response includes the posts and total number of available items:
+- Login
+- User
+- Posts
+- Single Post
 
-```json
-{
-  "message": "Fetched posts successfully.",
-  "posts": [],
-  "totalItems": 10
-}
-```
+### Mutations
 
-The current implementation returns two posts per page.
+- Create User
+- Create Post
+- Update Post
+- Delete Post
+- Update User Status
 
-## Real-Time Events
+The GraphQL endpoint supports:
 
-The server emits a Socket.IO event named:
+- Authentication
+- Validation
+- Pagination
+- Custom error formatting
+- GraphiQL playground
 
-```text
-posts
-```
+---
 
-The event includes an action identifying the change.
+## Validation
 
-### Post created
+Input validation includes:
 
-```json
-{
-  "action": "create",
-  "post": {}
-}
-```
+- Email validation
+- Password length validation
+- Required field validation
+- Post title validation
+- Post content validation
 
-### Post updated
+Invalid requests return structured validation errors.
 
-```json
-{
-  "action": "update",
-  "post": {}
-}
-```
+---
 
-### Post deleted
+## Security
 
-```json
-{
-  "action": "delete",
-  "post": "deleted-post-id"
-}
-```
+The backend includes:
 
-The React frontend can listen for these events and update the feed immediately.
+- Password hashing
+- JWT authentication
+- Route protection
+- Authorization checks
+- Ownership verification
+- GraphQL authentication middleware
+- Centralized error handling
 
-## Error Handling
+---
 
-The application uses centralized Express error middleware.
+# Tech Stack
 
-Errors are returned in the following format:
-
-```json
-{
-  "message": "Error description",
-  "data": []
-}
-```
-
-Depending on the request, the API may return:
-
-| Status | Meaning |
-|---:|---|
-| `401` | Authentication failed |
-| `403` | User is not authorized to modify the post |
-| `404` | User or post was not found |
-| `422` | Request validation failed |
-| `500` | Internal server error |
-
-## Getting Started
-
-### Prerequisites
-
-Install:
+## Backend
 
 - Node.js
-- npm
-- MongoDB Atlas or a local MongoDB server
+- Express.js
 
+## Database
 
-### Install dependencies
+- MongoDB
+- Mongoose
+
+## Authentication
+
+- JSON Web Tokens (JWT)
+- bcrypt
+
+## APIs
+
+- REST API
+- GraphQL
+
+## Real-Time Communication
+
+- Socket.IO
+
+## File Uploads
+
+- Multer
+
+## Validation
+
+- express-validator
+- validator.js
+
+## Development
+
+- Nodemon
+
+---
+
+# Architecture
+
+```text
+                 React Frontend
+                        │
+        ┌───────────────┴────────────────┐
+        │                                │
+     REST API                     GraphQL API
+      (main)                   (graphql-api)
+        │                                │
+        └───────────────┬────────────────┘
+                        │
+                 Authentication
+                 JWT Middleware
+                        │
+                 Controllers / Resolvers
+                        │
+                  Mongoose Models
+                        │
+                     MongoDB
+                        │
+               Image Storage (Multer)
+                        │
+             Socket.IO (REST branch)
+```
+
+---
+
+# Project Structure
+
+```text
+.
+├── controllers/
+├── graphql/
+│   ├── schema.js
+│   └── resolvers.js
+├── middleware/
+├── models/
+├── routes/
+├── util/
+├── images/
+├── test/
+├── app.js
+├── socket.js
+└── package.json
+```
+
+---
+
+# Data Models
+
+## User
+
+```text
+User
+│
+├── email
+├── password
+├── name
+├── status
+└── posts[]
+```
+
+---
+
+## Post
+
+```text
+Post
+│
+├── title
+├── content
+├── imageUrl
+├── creator
+├── createdAt
+└── updatedAt
+```
+
+---
+
+# REST API Endpoints
+
+## Authentication
+
+| Method | Endpoint | Description |
+|----------|----------|-------------|
+| PUT | /auth/signup | Register user |
+| POST | /auth/login | Login |
+| GET | /auth/status | Get user status |
+| PATCH | /auth/status | Update status |
+
+---
+
+## Feed
+
+| Method | Endpoint |
+|----------|----------|
+| GET | /feed/posts |
+| GET | /feed/post/:id |
+| POST | /feed/post |
+| PUT | /feed/post/:id |
+| DELETE | /feed/post/:id |
+
+---
+
+## Image Upload
+
+```
+PUT /post-image
+```
+
+---
+
+# GraphQL Operations
+
+## Queries
+
+```graphql
+query {
+  posts(page: 1) {
+    totalPosts
+    posts {
+      title
+      content
+      imageUrl
+    }
+  }
+}
+```
+
+---
+
+## Login
+
+```graphql
+query {
+  login(
+    email: "user@email.com",
+    password: "password"
+  ) {
+    token
+    userId
+  }
+}
+```
+
+---
+
+## Create Post
+
+```graphql
+mutation {
+  createPost(postInput:{
+    title:"Hello",
+    content:"First post",
+    imageUrl:"images/photo.jpg"
+  }){
+    _id
+    title
+  }
+}
+```
+
+---
+
+# Running the Project
+
+## Clone
+
+```bash
+git clone <repository-url>
+```
+
+---
+
+## Install
 
 ```bash
 npm install
 ```
 
+---
 
+## Environment Variables
 
-### Start the development server
+Create a `.env` file:
+
+```env
+PORT=8080
+
+MONGODB_URI=your_mongodb_connection
+
+JWT_SECRET=your_secret_key
+```
+
+---
+
+## Start
 
 ```bash
 npm start
 ```
 
-The API runs by default at:
+Server:
 
-```text
+```
 http://localhost:8080
 ```
 
-## Running Tests
+GraphQL Playground:
 
-Run all tests with:
+```
+http://localhost:8080/graphql
+```
+
+---
+
+# Testing
+
+The REST implementation includes unit tests for:
+
+- Authentication middleware
+- Authentication controller
+- Feed controller
+
+using:
+
+- Mocha
+- Chai
+- Sinon
+
+---
+
+# Future Improvements
+
+- Comments
+- Likes
+- Friend system
+- Notifications
+- Refresh tokens
+- Cloud image storage
+- Docker support
+- CI/CD pipeline
+- API documentation using Swagger/OpenAPI
+
+---
+
+# Frontend
+
+The React frontend is available in a separate repository.
+
+➡️ **Frontend Repository**
+
+*(Add your frontend GitHub link here.)*
+
+---
+
+# Alternative GraphQL Backend
+
+The GraphQL implementation is available in the **28-GraphQl** branch.
 
 ```bash
-npm test
+git checkout 28-GraphQl
 ```
 
-The test suite currently covers:
+---
 
-- Missing authorization headers
-- Invalid authorization header structures
-- JWT decoding and user ID extraction
-- Database failure handling during login
-- User status retrieval
-- Association of a newly created post with its creator
+# Author
 
-A separate test database should be used through `TEST_MONGODB_URI`.
+**Zahra Karandish**
 
-## GraphQL Version
+Software Developer
 
-An alternative GraphQL implementation is available in a separate branch:
+GitHub: https://github.com/<your-username>
 
-```text
-GRAPHQL_BRANCH_NAME
-```
-
-To run that implementation:
-
-```bash
-git switch GRAPHQL_BRANCH_NAME
-npm install
-npm start
-```
-
-See the branch-specific code for its GraphQL schema, resolvers, queries, and mutations.
-
-## Security Considerations
-
-The application uses:
-
-- Hashed passwords
-- JWT-protected endpoints
-- Post ownership verification
-- File-type filtering
-- Request validation
-- Environment variables for secrets
-
-For production deployment, the project should additionally use:
-
-- Restricted CORS origins
-- Rate limiting
-- Secure HTTP headers
-- Cloud-based image storage
-- Refresh tokens or a stronger session strategy
-- Production logging
-- Strong file-size and upload validation
-
-## Future Improvements
-
-- Add comments and likes
-- Add user follow relationships
-- Add refresh-token support
-- Make the pagination limit configurable
-- Store uploaded images in cloud storage
-- Add OpenAPI documentation
-- Expand integration and end-to-end tests
-- Improve Socket.IO authentication
-- Add automated continuous integration
-
-
+LinkedIn: https://linkedin.com/in/<your-profile>
