@@ -338,58 +338,6 @@ mutation {
 
 ---
 
-# Running the Project
-
-## Clone
-
-```bash
-git clone <repository-url>
-```
-
----
-
-## Install
-
-```bash
-npm install
-```
-
----
-
-## Environment Variables
-
-Create a `.env` file:
-
-```env
-PORT=8080
-
-MONGODB_URI=your_mongodb_connection
-
-JWT_SECRET=your_secret_key
-```
-
----
-
-## Start
-
-```bash
-npm start
-```
-
-Server:
-
-```
-http://localhost:8080
-```
-
-GraphQL Playground:
-
-```
-http://localhost:8080/graphql
-```
-
----
-
 # Testing
 
 The REST implementation includes unit tests for:
