@@ -16,6 +16,7 @@ This project demonstrates two backend implementations:
 - **28-GraphQl** → Alternative GraphQL implementation
 
 The React frontend is maintained in a separate repository.
+- 💻 **Frontend:** https://github.com/zkrandish/React-Frontend.git
 
 ---
 
@@ -425,7 +426,7 @@ The React frontend is available in a separate repository.
 
 ➡️ **Frontend Repository**
 
-*(Add your frontend GitHub link here.)*
+ https://github.com/zkrandish/React-Frontend.git
 
 ---
 
