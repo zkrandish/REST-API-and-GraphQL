@@ -55,7 +55,7 @@ app.use((error, req, res, next)=>{
     res.status(status).json({message:message, data:data});
 });
 
-mongoose.connect('mongodb+srv://@cluster0.hskal.mongodb.net/messages?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect('mongodb+srv://zkarandish:kGDlY2bBPkkh3BUR@cluster0.hskal.mongodb.net/messages?retryWrites=true&w=majority&appName=Cluster0')
 .then(result => {
     const server = app.listen(8080);
     
