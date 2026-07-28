@@ -378,15 +378,7 @@ The React frontend is available in a separate repository.
 
 ---
 
-# Alternative GraphQL Backend
 
-The GraphQL implementation is available in the **28-GraphQl** branch.
-
-```bash
-git checkout 28-GraphQl
-```
-
----
 
 # Author
 
