@@ -1,3 +1,4 @@
+require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
 const express = require('express');
@@ -99,9 +100,9 @@ app.use((req, res, next) => {
     res.status(status).json({ message: message, data: data });
   });
 
-mongoose.connect('mongodb+srv://zkarandish:kGDlY2bBPkkh3BUR@cluster0.hskal.mongodb.net/messages?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect(process.env.MONGODB_URI)
 .then(result => {
-     app.listen(8080);
+     app.listen(process.env.PORT || 8080);
 })
 .catch(err => {
     console.log(' MongoDB Connection Error:', err);
