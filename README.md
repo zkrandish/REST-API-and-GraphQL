@@ -367,12 +367,6 @@ Install:
 - npm
 - MongoDB Atlas or a local MongoDB server
 
-### Clone the repository
-
-```bash
-git clone BACKEND_REPOSITORY_URL
-cd nodejs-restapi
-```
 
 ### Install dependencies
 
@@ -380,27 +374,7 @@ cd nodejs-restapi
 npm install
 ```
 
-### Configure environment variables
 
-Create a `.env` file in the project root:
-
-```env
-MONGODB_URI=your_mongodb_connection_string
-TEST_MONGODB_URI=your_test_database_connection_string
-JWT_SECRET=your_long_random_jwt_secret
-PORT=8080
-```
-
-Do not commit the `.env` file.
-
-An `.env.example` file should be included to document the required variables:
-
-```env
-MONGODB_URI=
-TEST_MONGODB_URI=
-JWT_SECRET=
-PORT=8080
-```
 
 ### Start the development server
 
@@ -484,6 +458,4 @@ For production deployment, the project should additionally use:
 - Improve Socket.IO authentication
 - Add automated continuous integration
 
-## License
 
-This project is licensed under the ISC License.
