@@ -1,3 +1,4 @@
+require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -55,9 +56,9 @@ app.use((error, req, res, next)=>{
     res.status(status).json({message:message, data:data});
 });
 
-mongoose.connect('mongodb+srv://zkarandish:kGDlY2bBPkkh3BUR@cluster0.hskal.mongodb.net/messages?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect(process.env.MONGODB_URI)
 .then(result => {
-    const server = app.listen(8080);
+   const server = app.listen(process.env.PORT || 8080);
     
     // ✅ Fix CORS issues for Socket.io
     const io = require('./socket').init(server);
