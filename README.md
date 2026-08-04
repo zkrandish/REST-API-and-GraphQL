@@ -386,6 +386,6 @@ The React frontend is available in a separate repository.
 
 Software Developer
 
-GitHub: https://github.com/<your-username>
+GitHub: https://github.com/zkrandish
 
-LinkedIn: https://linkedin.com/in/<your-profile>
+LinkedIn: https://www.linkedin.com/in/zahra-karandish-bb2160290/
