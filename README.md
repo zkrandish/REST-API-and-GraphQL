@@ -388,4 +388,4 @@ Software Developer
 
 GitHub: https://github.com/zkrandish
 
-LinkedIn: https://www.linkedin.com/in/zahra-karandish-bb2160290/
+LinkedIn: https://www.linkedin.com/in/zkarandish/
